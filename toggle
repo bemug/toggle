@@ -1,0 +1,20 @@
+#!/bin/bash -eu
+
+PID_FILE="/tmp/$1.toggle"
+
+if [ -f "$PID_FILE" ]; then
+	if $(kill $(cat $PID_FILE)); then
+		exit 0
+	fi
+fi
+
+function finish {
+	rm $PID_FILE
+}
+trap finish EXIT
+
+# Save our pid
+echo $$ > $PID_FILE
+
+#Launch our executable
+$1
